@@ -1,0 +1,10 @@
+# dependencies & builds
+node_modules/
+dist/
+
+# runtime state (local-only, never commit)
+server/data/
+server/artifacts/
+
+# environment
+.env
