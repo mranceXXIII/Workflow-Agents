@@ -1,13 +1,15 @@
 import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const dataDir = join(here, '..', 'data');
 mkdirSync(dataDir, { recursive: true });
 
-export const DB_PATH = join(dataDir, 'app.db');
+export const DB_PATH = process.env.COMMAND_CENTER_DB
+  ? resolve(process.env.COMMAND_CENTER_DB)
+  : join(dataDir, 'app.db');
 
 export const db = new DatabaseSync(DB_PATH);
 db.exec('PRAGMA journal_mode = WAL;');

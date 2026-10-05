@@ -9,6 +9,7 @@ import { startMission, missionEvents, approvePlan, revisePlan, approveSubtask, d
 import { mode, nimModel, nimEmbedModel, listModels } from './llm/nim.js';
 import { searchKnowledge, addKnowledge, reembedAll, knowledgeStats, consolidateKnowledge } from './knowledge/store.js';
 import { seedKnowledge } from './seed/playbooks.js';
+import { startTelegramBot } from './telegram/bot.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -52,6 +53,7 @@ app.put('/api/settings', (req, res) => {
     setSetting(k, v.trim());
     saved++;
   }
+  startTelegramBot(); // starts polling when a token was just saved; no-op otherwise
   res.json({ ok: true, saved, mode: mode() });
 });
 
@@ -259,4 +261,5 @@ app.use((err: unknown, _req: express.Request, res: express.Response, _next: expr
 const PORT = Number(process.env.PORT || 8787);
 app.listen(PORT, () => {
   console.log(`IT Ops Command Center server on http://localhost:${PORT} (mode: ${mode()}, model: ${nimModel()}, agents: ${synced})`);
+  startTelegramBot(); // long-polls only when a Telegram token is configured
 });
